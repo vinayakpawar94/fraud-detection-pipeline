@@ -1,0 +1,69 @@
+Rule 1
+Rule Description :Classic fraud signature
+Test Input
+type = TRANSFER
+amount = 50000
+oldbalanceOrg = 50000
+newbalanceOrig = 0
+oldbalanceDest = 0
+newbalanceDest = 0
+
+Rule 2
+Rule High amount + drained account
+Test Input
+type = DEBIT
+amount = 120000
+oldbalanceOrg = 121000
+newbalanceOrig = 1000
+oldbalanceDest = 5000
+newbalanceDest = 20000
+
+Rule 3
+Rule Transfer to fake/dormant destination
+Test Input
+type = TRANSFER
+amount = 30000
+oldbalanceOrg = 30000
+newbalanceOrig = 0
+oldbalanceDest = 0
+newbalanceDest = 0
+
+Rule 4
+Rule No balance movement
+Test Input
+type = CASH_OUT
+amount = 25000
+oldbalanceOrg = 25000
+newbalanceOrig = 25000
+oldbalanceDest = 10000
+newbalanceDest = 10000
+
+Rule 5
+Rule Suspicious top-up into empty account
+Test Input
+type = CASH_IN
+amount = 250000
+oldbalanceOrg = 0
+newbalanceOrig = 250000
+oldbalanceDest = 0
+newbalanceDest = 0
+
+Rule 6
+Rule Ghost transaction (no sender movement)
+Test Input
+type = TRANSFER
+amount = 80000
+oldbalanceOrg = 80000
+newbalanceOrig = 80000
+oldbalanceDest = 20000
+newbalanceDest = 100000
+
+Rule 7
+Rule Model+Anomaly override (model proba > 0.5 & anomaly < -0.3)
+Test Input
+type = TRANSFER
+amount = 1000000
+oldbalanceOrg = 1000000
+newbalanceOrig = 0
+oldbalanceDest = 1000000
+newbalanceDest = 2000000

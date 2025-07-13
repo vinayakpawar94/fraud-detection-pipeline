@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Fraud Detection</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+ <label class="toggle-switch">
+   <input type="checkbox" onchange="document.body.classList.toggle('light-mode')" />
+   <span class="slider"></span>
+</label>
+  <h2>🕵 Smart Fraud Detection 🕵</h2>
+
+  <div class="layout">
+    <!-- Left: Form -->
+    <form class="form-card" method="POST">
+      <label>Transaction Category</label>
+      <select name="type" required>
+        <option value="PAYMENT">PAYMENT</option>
+        <option value="TRANSFER">TRANSFER</option>
+        <option value="CASH_OUT">CASH_OUT</option>
+        <option value="DEBIT">DEBIT</option>
+        <option value="CASH_IN">CASH_IN</option>
+      </select>
+
+      <label>Transaction Amount (₹)</label>
+      <input type="number" step="any" name="amount" required />
+
+      <label>Sender's Balance Before</label>
+      <input type="number" step="any" name="oldbalanceOrg" required />
+
+      <label>Sender's Balance After</label>
+      <input type="number" step="any" name="newbalanceOrig" required />
+
+      <label>Receiver's Balance Before</label>
+      <input type="number" step="any" name="oldbalanceDest" required />
+
+      <label>Receiver's Balance After</label>
+      <input type="number" step="any" name="newbalanceDest" required />
+
+      <label for="threshold">Detection Threshold: <span id="thresholdVal">0.61</span></label>
+      <input type="range" name="threshold" min="0" max="1" step="0.01" value="0.61"
+             onchange="document.getElementById('thresholdVal').innerText = this.value" />
+
+      <button type="submit">Detect Fraud</button>
+    </form>
+
+    <!-- Right: Result + History -->
+    <div class="right-column">
+      {% if result %}
+      <div class="result-box">
+        {% if result.error %}
+          <p class="fraud">❌ Error: {{ result.error }}</p>
+        {% else %}
+          <p class="{{ 'fraud' if result.label == 'FRAUD' else 'not-fraud' }}">
+            🔍 Prediction: {{ result.label }}<br>
+            💡 Probability: {{ result.probability }}%<br>
+            🧬 Anomaly Score: {{ result.anomaly_score }}<br>
+            {% if result.rule_based %}
+              <br><span class="fraud">
+                🛑 <strong>Rule-based fraud trigger applied</strong><br>
+                ⚠️ {{ result.rule_reason }}
+              </span>
+            {% endif %}
+          </p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if history %}
+      <div class="history-box">
+        <h3>📜 Prediction History</h3>
+        <div class="history-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Prediction</th>
+                <th>Probability</th>
+                <th>Anomaly</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in history %}
+              <tr>
+                <td>{{ item.type }}</td>
+                <td>{{ item.amount }}</td>
+                <td class="{{ 'fraud' if item.label == 'FRAUD' else 'not-fraud' }}">{{ item.label }}</td>
+                <td>{{ item.probability }}%</td>
+                <td>{{ item.anomaly_score }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>
